@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Developer Registry Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-12 bg-slate-50 min-h-[80vh] flex flex-col justify-center">
+    
+    <!-- 🏢 Custom Application Input Card Container -->
+    <div class="bg-white border border-slate-200/80 p-8 rounded-2xl shadow-sm w-full">
+        
+        <!-- Header Matrix Section -->
+        <div class="flex items-center gap-3 border-b border-slate-100 pb-5 mb-6">
+            <div class="w-10 h-10 rounded-full bg-[#0a008a] flex items-center justify-center text-white font-black text-sm shadow-sm">
+                💻
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">
+                    System Architecture Registry
+                </h1>
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Source Entity Metadata</p>
+            </div>
+        </div>
+
+        <!-- Main Structural Profile Node -->
+        <div class="space-y-6">
+            
+            <div class="space-y-4">
+                <!-- Development Organization Field -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Engineering Framework
+                    </label>
+                    <div class="text-sm text-slate-500 font-semibold p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                        This website is engineered by <span class="text-slate-800 font-bold">Growing Developer</span>
+                    </div>
+                </div>
+
+                <!-- Primary Architect Field -->
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Lead System Architect
+                    </label>
+                    <div class="text-base font-extrabold text-slate-800 tracking-tight pl-1">
+                        Ayaan Ayoosh
+                    </div>
+                </div>
+
+                <!-- Code Repository Pipeline Node -->
+                <div class="flex flex-col gap-1.5 pt-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Repository Distribution Network
+                    </label>
+                    <p class="text-xs text-slate-400 font-medium pl-1">Find the active deployment source code repository below:</p>
+                    
+                    <div class="pt-2">
+                        <a href="https://github.com/AyaanAyoosh-dev/agent-sandbox" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-6 py-3.5 inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm group">
+                            <span>Access GitHub Repository</span>
+                            <span class="transition duration-150 group-hover:translate-x-0.5">📂</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sleek Footer Matrix Row -->
+            <div class="pt-5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                <span>Identity State: Verified</span>
+                <span class="text-[#0a008a]">Secure Payload ⚡</span>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

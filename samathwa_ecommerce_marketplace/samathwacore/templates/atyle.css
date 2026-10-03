@@ -1,0 +1,35 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-image:  url("bac.jpg");
+    background-size: cover;
+  }
+  .form{
+    font-family: "Lucida Handwriting", cursive;
+
+  }
+  .form{
+ 
+
+    text-align: center;
+    color:  rgb(255, 255, 255)
+  }
+.form {
+    text-align: center;
+}
+
+   .form {
+    text-align: center;
+    outline: 0;
+    
+    border-radius: 10px;
+    background: rgb(4, 225, 203);
+    width: 150;
+    border: 80px;
+    margin: 80px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 20px;
+    font-family: "Lucida Handwriting", cursive;
+    color: rgb(255, 255, 255)
+}

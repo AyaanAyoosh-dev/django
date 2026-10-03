@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block title %}New Conversation{% endblock %}
+
+{% block content %}
+  <h1 class="mb-6 text-3xl font-semibold text-center">New Conversation</h1>
+  <form method="post" action="">
+    {% csrf_token %}
+    <div class="max-w-md mx-auto">
+      <div class="space-y-4 text-lg text-gray-700 font-semibold">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+          <div class="mb-4">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+              <p class="text-red-500">{{ field.errors|join:", " }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <button class="mt-6 py-4 px-8 text-lg rounded-xl bg-teal-500 hover:bg-teal-700 text-white">Send</button>
+    </div>
+  </form>
+{% endblock %}

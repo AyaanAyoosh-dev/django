@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; color: #334155; }
+        .email-box { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .header { background-color: #1e3a8a; padding: 25px; text-align: center; color: #ffffff; }
+        .header h2 { margin: 0; font-size: 1.6em; font-weight: 600; letter-spacing: 0.5px; }
+        .content { padding: 30px; }
+        .greeting { font-size: 1.1em; font-weight: 600; color: #1e293b; margin-bottom: 20px; }
+        .task-card { background: #f1f5f9; border-left: 4px solid #3b82f6; padding: 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px; }
+        .task-title { font-weight: 700; color: #1e293b; margin-bottom: 5px; }
+        .task-date { font-size: 0.85em; color: #64748b; font-weight: 600; margin-top: 5px; }
+        .footer { background: #f8fafc; padding: 20px; text-align: center; font-size: 0.8em; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="email-box">
+        <div class="header">
+            <h2>📊 EduSync Voice: Daily Summary</h2>
+        </div>
+        <div class="content">
+            <div class="greeting">Good evening Parents,</div>
+            <p style="line-height: 1.6; margin-bottom: 25px;">Here is the verified classroom update and upcoming student deadlines captured automatically in class today:</p>
+            
+            {% for task in homework_list %}
+            <div class="task-card">
+                <div class="task-title">📚 {{ task.subject }}</div>
+                <div style="line-height: 1.5;">{{ task.task_details }}</div>
+                <div class="task-date">📅 Due Date: {{ task.due_date|date:"l, F d, Y" }}</div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 20px; color: #64748b;">
+                🎉 Excellent news! No new homework or upcoming assignment deadlines were recorded in class today.
+            </div>
+            {% endfor %}
+        </div>
+        <div class="footer">
+            Sent automatically by EduSync Voice • Built with Privacy-First Edge AI • Design For Change
+        </div>
+    </div>
+</body>
+</html>

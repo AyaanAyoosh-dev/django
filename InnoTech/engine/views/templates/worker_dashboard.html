@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Worker Dashboard - Green Chemistry Pipeline</title>
+</head>
+<body>
+    <h2>Factory Floor Worker Dashboard</h2>
+    <p><strong>Welcome, {{ request.user.username }}!</strong></p>
+    <p>Assigned Factory: <strong>{{ request.session.factory }}</strong> | Role: <strong>{{ request.session.role }}</strong></p>
+    
+    <hr>
+
+    <h3>Submit XRF Scrap Data</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Enter XRF Composition (e.g., cu=45, au=2, fe=12):</label><br><br>
+        <textarea name="xrf_data" rows="4" cols="50" placeholder="cu=40, ni=15, al=5" required></textarea><br><br>
+        
+        <button type="submit">Run Agentic Pipeline & Check Cache</button>
+    </form>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li style="color: green;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <br>
+    <form action="{% url 'login' %}" method="get">
+        <button type="submit">Log Out</button>
+    </form>
+</body>
+</html>

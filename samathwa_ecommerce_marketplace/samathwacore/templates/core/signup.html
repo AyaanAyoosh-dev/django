@@ -1,0 +1,131 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Sign Up - Register New Entity Account{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-12 bg-slate-50 min-h-[80vh] flex flex-col justify-center">
+    
+    <!-- 🏢 Custom Application Input Card Container -->
+    <div class="bg-white border border-slate-200/80 p-8 rounded-2xl shadow-sm w-full">
+        
+        <!-- Header Matrix Section -->
+        <div class="flex items-center gap-3 border-b border-slate-100 pb-5 mb-6">
+            <div class="w-10 h-10 rounded-full bg-[#0a008a] flex items-center justify-center text-white font-black text-sm shadow-sm">
+                📝
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">
+                    Create Platform Account
+                </h1>
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Secure Identity Enrollment Terminal</p>
+            </div>
+        </div>
+
+        <!-- Main Submission Engine Form -->
+        <form method="post" action="." class="space-y-6">
+            {% csrf_token %}
+
+            <div class="space-y-4">
+                
+                <!-- System Diagnostics: Top Form Level Error Reporting -->
+                {% if form.non_field_errors %}
+                    <div class="p-4 mb-4 text-xs font-bold text-red-700 bg-red-50 rounded-xl border border-red-100">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                
+                <div class="flex flex-col gap-1.5">
+                    <label for="{{ form.username.id_for_label }}" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Identity Designation (Username)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        {{ form.username }}
+                    </div>
+                    {% if form.username.errors %}
+                        <p class="text-[10px] text-red-600 font-bold mt-1">{{ form.username.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Routing Distribution Address Node -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="{{ form.email.id_for_label }}" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Routing Address (Email Location)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        {{ form.email }}
+                    </div>
+                    {% if form.email.errors %}
+                        <p class="text-[10px] text-red-600 font-bold mt-1">{{ form.email.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Primary Security Passphrase Node -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="{{ form.password1.id_for_label }}" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Security Passphrase (Password)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        {{ form.password1 }}
+                    </div>
+                    {% if form.password1.errors %}
+                        <p class="text-[10px] text-red-600 font-bold mt-1">{{ form.password1.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Passphrase Validation Verify Node -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="{{ form.password2.id_for_label }}" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Confirm Passphrase (Repeat Password)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        {{ form.password2 }}
+                    </div>
+                    {% if form.password2.errors %}
+                        <p class="text-[10px] text-red-600 font-bold mt-1">{{ form.password2.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <!-- Sleek Action Submission Node Button Row -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                <!-- Session Route Fallback Link -->
+                <a href="{% url 'samathwacore:login' %}" class="text-xs font-bold text-slate-400 hover:text-[#0a008a] transition duration-150">
+                    Existing profile? Authenticate Node
+                </a>
+
+                <button type="submit" class="px-8 py-3 bg-[#0a008a] hover:bg-[#05005c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm flex items-center gap-1.5">
+                    <span>Enroll Identity</span> ⚡
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<!-- 🛠️ Inject CSS to handle Tailwind custom form sizing and inputs dynamically -->
+<style>
+    /* Turn Django's default registration form fields into clean interface boxes */
+    form input[type="text"], 
+    form input[type="email"], 
+    form input[type="password"] {
+        width: 100% !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        padding: 0.70rem 1rem !important;
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+        background-color: #f8fafc !important;
+        transition: all 150ms ease !important;
+    }
+    form input[type="text"]:focus, 
+    form input[type="email"]:focus, 
+    form input[type="password"]:focus {
+        outline: none !important;
+        border-color: #0a008a !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(10, 0, 138, 0.05) !important;
+    }
+</style>
+{% endblock %}

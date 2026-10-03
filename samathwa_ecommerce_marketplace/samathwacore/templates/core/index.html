@@ -1,0 +1,75 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-8 bg-slate-50">
+    
+    <!-- 🛒 Available Services Grid Title Block -->
+    <div class="mb-6 flex flex-col gap-1">
+        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Available Services</h2>
+        <p class="text-xs text-slate-400 font-medium">Real-time services pulled directly from our relational database layers</p>
+    </div>
+
+    <!-- 🖼️ Main Services Product Grid (Fixed aspect image containers to fix Looney Tunes bug) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {% for item in items %}
+            <div class="group bg-white border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between">
+                <a href="{% url 'item:detail' item.id %}" class="flex flex-col h-full">
+                    
+                    <!-- Fixed Proportion Image Window Container -->
+                    <div class="w-full aspect-[16/11] bg-slate-50 overflow-hidden flex items-center justify-center border-b border-slate-100">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="text-slate-300 font-bold text-[10px] uppercase tracking-wider">No Image Asset</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Card Body Data Block -->
+                    <div class="p-4 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800 tracking-tight group-hover:text-indigo-600 transition">
+                                {{ item.name|capfirst }}
+                            </h3>
+                        </div>
+                        
+                        <!-- Restored Capital Fees Object Variable Linking -->
+                        <div class="mt-4 pt-2 border-t border-slate-50 flex items-center justify-between text-[11px]">
+                            <span class="font-bold text-slate-400 uppercase tracking-wider">Fees</span>
+                            <span class="font-extrabold text-slate-900 text-sm tracking-tight">{{ item.Fees }} <span class="text-[10px] font-medium text-slate-400">AED</span></span>
+                        </div>
+                    </div>
+
+                </a>
+            </div>
+        {% empty %}
+            <div class="col-span-full border border-dashed border-slate-200 bg-white rounded-2xl p-12 text-center text-slate-400 text-xs font-medium">
+                No active showcase items found in database nodes.
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- 🏷️ Types of Services Category Title Block -->
+    <div class="mb-6 pt-6 border-t border-slate-200 flex flex-col gap-1">
+        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Types of Services</h2>
+        <p class="text-xs text-slate-400 font-medium">Browse verified digital service categories</p>
+    </div>
+
+    <!-- Compact Category Cards Box Grid Loop (Using your exact model syntax) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for category in categories %}
+            <div class="bg-white border border-slate-200/60 rounded-xl shadow-sm hover:border-indigo-100 hover:shadow-md transition duration-150">
+                <a href="#" class="block p-4">
+                    <h3 class="text-xs font-bold text-slate-800 hover:text-indigo-600 transition">{{ category.name }}</h3>
+                    <p class="text-[10px] font-bold text-indigo-600 bg-indigo-50 inline-block px-2 py-0.5 rounded mt-1.5">
+                        {{ category.item.count }} items
+                    </p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
+

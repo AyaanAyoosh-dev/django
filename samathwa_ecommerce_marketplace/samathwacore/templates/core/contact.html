@@ -1,0 +1,112 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Contact Support Registry{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-12 bg-slate-50 min-h-[80vh] flex flex-col justify-center">
+    
+    <!-- 🏢 Custom Application Input Card Container -->
+    <div class="bg-white border border-slate-200/80 p-8 rounded-2xl shadow-sm w-full">
+        
+        <!-- Header Matrix Section -->
+        <div class="flex items-center gap-3 border-b border-slate-100 pb-5 mb-6">
+            <div class="w-10 h-10 rounded-full bg-[#0a008a] flex items-center justify-center text-white font-black text-sm shadow-sm">
+                📬
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">
+                    Inbound Communication Terminal
+                </h1>
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Secure Relational Support Node</p>
+            </div>
+        </div>
+
+        <!-- Main Submission Engine Form -->
+        <form method="post" action="." class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Form Object Rendering Loop -->
+            <div class="space-y-4">
+                
+                <!-- Full Name Field -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="id_name" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Sender Identity (Full Name)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        <input type="text" name="name" id="id_name" placeholder="Enter your full name node" required>
+                    </div>
+                </div>
+
+                <!-- Email Address Field -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="id_email" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Routing Address (Email)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        <input type="email" name="email" id="id_email" placeholder="name@domain.com" required>
+                    </div>
+                </div>
+
+                <!-- Subject Field -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="id_subject" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Classification Core (Subject)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        <input type="text" name="subject" id="id_subject" placeholder="Summary of communication intent" required>
+                    </div>
+                </div>
+
+                <!-- Message Field -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="id_message" class="text-[10px] font-black text-slate-400 uppercase tracking-wide">
+                        Transmission Payload (Message)
+                    </label>
+                    <div class="text-sm text-slate-700">
+                        <textarea name="message" id="id_message" placeholder="Provide raw details or request specifics..." required></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sleek Action Submission Node Button Row -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button type="submit" class="px-8 py-3 bg-[#0a008a] hover:bg-[#05005c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm flex items-center gap-1.5">
+                    <span>Dispatch Payload</span> ⚡
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<!-- 🛠️ Inject CSS to handle Tailwind custom form sizing and inputs dynamically -->
+<style>
+    /* Turn default text areas, inputs, and select fields into pristine layout boxes */
+    form input[type="text"], 
+    form input[type="email"], 
+    form textarea {
+        width: 100% !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        padding: 0.70rem 1rem !important;
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+        background-color: #f8fafc !important;
+        transition: all 150ms ease !important;
+    }
+    form input[type="text"]:focus, 
+    form input[type="email"]:focus, 
+    form textarea:focus {
+        outline: none !important;
+        border-color: #0a008a !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(10, 0, 138, 0.05) !important;
+    }
+    form textarea {
+        min-height: 140px !important;
+        resize: none !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSync Parent Hub</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f6f9; margin: 0; padding: 30px; color: #1e293b; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background: #0f172a; padding: 20px 30px; border-radius: 12px; color: white; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 1.6em; color: #38bdf8; }
+        .section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        h2 { color: #334155; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; font-size: 1.2em; }
+        .day-badge { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+        .card { border-left: 4px solid #38bdf8; padding: 14px 20px; background: #f8fafc; margin: 12px 0; border-radius: 0 8px 8px 0; position: relative; }
+        
+        /* 🔊 SPEAK BUTTON ELEMENT STYLING */
+        .btn-tts { position: absolute; top: 15px; right: 20px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1em; transition: background 0.2s, transform 0.1s; }
+        .btn-tts:hover { background: #e2e8f0; transform: scale(1.05); }
+        .btn-tts:active { transform: scale(0.95); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; padding-right: 45px; }
+        .due-badge { font-size: 0.8em; color: #b45309; font-weight: 600; background: #fef3c7; padding: 2px 8px; border-radius: 4px; }
+    </style>
+    
+    <script>
+        // 🗣️ NATIVE TEXT-TO-SPEECH PORTAL CONTROLLER
+        function speakCardText(buttonElement) {
+            // Stop any ongoing speech instantly
+            window.speechSynthesis.cancel();
+            
+            // Extract subject and details for complete context readout
+            const card = buttonElement.parentElement;
+            const rawSubject = card.querySelector('.task-subject')?.innerText || '';
+            const rawDetails = card.querySelector('.task-text-payload')?.innerText || '';
+            
+            // Combine text
+            let textToRead = `${rawSubject}. ${rawDetails}`.trim();
+            
+            // Strip emojis so TTS engine doesn't speak out visual icons (e.g. "Open book")
+            textToRead = textToRead.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+            
+            if (!textToRead.trim()) return;
+            
+            const speechInstance = new SpeechSynthesisUtterance(textToRead);
+            
+            // Speech synthesis settings
+            speechInstance.rate = 1.0; 
+            speechInstance.pitch = 1.0;
+            
+            // Visual feedback state
+            buttonElement.style.background = '#dcfce7';
+            
+            const resetBtn = () => { buttonElement.style.background = '#f1f5f9'; };
+            speechInstance.onend = resetBtn;
+            speechInstance.onerror = resetBtn;
+            
+            // Speak out loud
+            window.speechSynthesis.speak(speechInstance);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>EduSync Portal</h1>
+                <p style="margin: 4px 0 0 0; color: #94a3b8; font-size: 0.9em;">Role: Student / Parent Monitoring Feed</p>
+            </div>
+            <a href="/logout/" style="color: #ef4444; font-weight: 600; text-decoration: none; font-size: 0.9em;">🚪 Sign Out</a>
+        </header>
+
+        <div class="section">
+            <h2>📅 Daily Timeline Summaries</h2>
+            {% for date, tasks in daily_summaries.items %}
+                <div style="margin-top: 20px;"><span class="day-badge">{{ date }}</span></div>
+                {% for task in tasks %}
+                    <div class="card">
+                        <!-- 🔊 Text-To-Speech Execution Trigger Icon -->
+                        <button class="btn-tts" onclick="speakCardText(this)" title="Read Summary Out Loud">🔊</button>
+                        
+                        <div class="card-header">
+                            <strong class="task-subject">📖 Subject: {{ task.subject }}</strong>
+                            {% if task.due_date %}
+                                <span class="due-badge">Due: {{ task.due_date }}</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Wrapped content tightly inside payload class -->
+                        <p class="task-text-payload" style="margin: 8px 45px 0 0; font-size: 0.95em; color: #475569;">{{ task.task_details }}</p>
+                    </div>
+                {% endfor %}
+            {% empty %}
+                <p style="color: #64748b; font-style: italic; margin-top: 15px;">No chronological updates logged on the network line today.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

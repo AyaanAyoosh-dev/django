@@ -1,0 +1,63 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-image: url("bac.jpg");
+    background-size: cover;
+  }
+
+ input {
+    font-family: "Lucida Handwriting", cursive;
+    position: relative;
+    z-index: 1;
+    background:#ffffff;
+    opacity: 99%;
+    max-width: 260px;
+    margin: 200px auto 100px;
+    padding: 10px 45px 30px 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    border-radius: 30px;
+}
+ p {
+ 
+    font-size: 15px;
+    text-align: center;
+
+}
+ input{
+    outline: 0;
+    border-radius: 50px;
+    background: #f2f2f2d7;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+
+}
+ input:hover{
+    background-color: rgb(182, 238, 238);
+    transition: all is ease 0s;
+}
+ input:focus{
+    background-color: rgb(182, 238, 238);
+    transition: all is ease 0s;
+}
+ button{
+text-transform: uppercase;
+outline: 0;
+border-radius: 20px;
+width: 100%;
+background: rgb(148, 247, 247);
+border: 0;
+padding: 15px;
+color: #000000;
+font-size: 15px;
+cursor: pointer;
+font-family: "Lucida Handwriting", cursive;
+}
+button:hover, button:active, button:focus{
+    background-color: rgb(118, 168, 168);
+    transition: all is ease 0s;
+}

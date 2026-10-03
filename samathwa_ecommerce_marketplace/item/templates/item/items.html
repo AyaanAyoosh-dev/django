@@ -1,0 +1,134 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Browse Services & Products {% endblock %}
+
+{% block content %}
+<div class="w-full max-w-7xl mx-auto px-4 py-12 bg-slate-50 min-h-[80vh]">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
+        
+        <!-- 🎛️ Left Sidebar Node: Search Engine & Filtering Matrix -->
+        <div class="md:col-span-1 bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm space-y-6">
+            
+            <!-- Context Header -->
+            <div class="border-b border-slate-100 pb-4">
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Search Matrix</p>
+            </div>
+
+            <!-- Form Matrix Engine -->
+            <form method="get" action="{% url 'item:items' %}" class="space-y-4">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-wide">Keyword Registry</label>
+                    <input name="query" type="text" value="{{ query }}" placeholder="Find a Service or Product">
+                </div>
+                <button type="submit" class="w-full py-3 bg-[#0a008a] hover:bg-[#05005c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm flex items-center justify-center gap-1.5">
+                    <span>Execute Search</span> 🔍
+                </button>
+            </form>
+
+            <hr class="border-slate-100">
+
+            <!-- Category Filter Node -->
+            <div class="space-y-3">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-wide block">Taxonomy Categories</label>
+                <ul class="space-y-1">
+                    {% for category in categories %}
+                        <li>
+                            <a href="{% url 'item:items' %}?query={{ query }}&category={{ category.id }}" 
+                               class="block text-xs px-3 py-2 rounded-xl transition duration-150 font-semibold {% if category.id == category_id %} bg-slate-100 text-[#0a008a] border-l-4 border-[#0a008a] pl-2 {% else %} text-slate-600 hover:bg-slate-50 hover:text-slate-900 {% endif %}">
+                                {{ category.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <hr class="border-slate-100">
+
+            <!-- Clear Action Container -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-wide block">State Reset</label>
+                <a href="{% url 'item:items' %}" class="w-full py-2.5 inline-block text-center bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm">
+                    Clear Filters ⚡
+                </a>
+            </div>
+        </div>
+
+        <!-- 📦 Right Grid Node: Dynamic Relational Data Results -->
+        <div class="md:col-span-3 space-y-4">
+            
+            <!-- Result Meta Information Node -->
+            <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Available Assets & Inventory</p>
+                <span class="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-mono">COUNT: {{ items|length }}</span>
+            </div>
+
+            <!-- Main Catalog Grid Layout -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in items %}
+                    <div class="group bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between transition duration-200 hover:shadow-md hover:border-slate-300">
+                        <a href="{% url 'item:detail' item.id %}" class="flex flex-col h-full">
+                            
+                            <!-- Object Image Node Container -->
+                            <div class="relative bg-slate-100 aspect-video w-full overflow-hidden border-b border-slate-100">
+                                {% if item.image %}
+                                    <img src="{{ item.image.url }}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" alt="{{ item.name }}">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                        <span class="text-3xl">📦</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Structural Metadata Body -->
+                            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Asset Entity</p>
+                                    <h2 class="text-base font-bold text-slate-800 tracking-tight line-clamp-1 group-hover:text-[#0a008a] transition duration-150">
+                                        {{ item.name }}
+                                    </h2>
+                                </div>
+                                
+                                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Financial Rate</span>
+                                    <p class="text-sm font-black text-slate-900 font-mono">
+                                        {{ item.fees }}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% empty %}
+                    <!-- Null State Fallback Node -->
+                    <div class="col-span-full bg-white border border-slate-200/80 p-12 rounded-2xl text-center">
+                        <span class="text-4xl block mb-3">🔍</span>
+                        <p class="text-sm font-bold text-slate-700">No Registry Matching Entries Found</p>
+                        <p class="text-xs text-slate-400 mt-1">Modify your query constraints or select an alternative category taxonomy node.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 🛠️ Inject CSS to style custom search field parameters dynamically -->
+<style>
+    /* Unify search matrix parameters with the relational form engine styles */
+    form input[type="text"] {
+        width: 100% !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        padding: 0.70rem 1rem !important;
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+        background-color: #f8fafc !important;
+        transition: all 150ms ease !important;
+    }
+    form input[type="text"]:focus {
+        outline: none !important;
+        border-color: #0a008a !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(10, 0, 138, 0.05) !important;
+    }
+</style>
+{% endblock %}

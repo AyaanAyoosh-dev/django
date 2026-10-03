@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduSync Hub</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 30px; color: #1e293b; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
+        h1 { color: #1e3a8a; margin: 0; font-size: 2.2em; }
+        .status-badge { background-color: #10b981; color: white; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9em; box-shadow: 0 2px 4px rgba(16,185,129,0.2); }
+        .queue-section { margin-top: 40px; }
+        h2 { color: #334155; font-size: 1.4em; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); padding: 25px; margin-bottom: 20px; border-left: 6px solid #3b82f6; position: relative; transition: opacity 0.3s, transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        .card.unverified { border-left-color: #f59e0b; }
+        .meta-line { color: #64748b; font-size: 0.85em; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-row { margin-bottom: 8px; line-height: 1.5; }
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
+        button { border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.95em; transition: background-color 0.2s; }
+        .btn-approve { background-color: #10b981; color: white; }
+        .btn-approve:hover { background-color: #059669; }
+        .btn-deny { background-color: #ef4444; color: white; }
+        .btn-deny:hover { background-color: #dc2626; }
+        .empty-msg { color: #64748b; font-style: italic; background: #e2e8f0; padding: 15px; border-radius: 8px; text-align: center; }
+    </style>
+<script>
+        // --- VERIFY BUTTON ACTION ---
+        function verifyAssignment(assignmentId, cardElement) {
+            fetch(`/api/verify-assignment/${assignmentId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Network response failed");
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    // Reload page or move card to Synchronized Feeds section
+                    location.reload(); 
+                } else {
+                    alert("Failed to verify assignment: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error verifying assignment:", error));
+        }
+
+        // --- REJECT BUTTON ACTION ---
+        function rejectAssignment(assignmentId, cardElement) {
+            fetch(`/api/reject-assignment/${assignmentId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Network response failed");
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    // Remove card from UI only after DB successfully updates
+                    cardElement.remove(); 
+                } else {
+                    alert("Failed to reject assignment: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error rejecting assignment:", error));
+        }
+
+        // Helper function to extract CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🏫 EduSync Control Panel</h1>
+                <p style="margin: 4px 0 0 0; color: #475569; font-size: 0.95em;">
+                    Active Session: <strong>{{ request.user.username }}</strong>
+                </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="status-badge">📶 Wireless Node Active</div>
+                <a href="{% url 'teacher_logout' %}" style="color: #ef4444; font-weight: 600; text-decoration: none; font-size: 0.9em; padding: 6px 12px; border: 1px solid #fca5a5; border-radius: 6px; background: #fef2f2; transition: background 0.2s;">🚪 Sign Out</a>
+            </div>
+        </header>
+
+        <div class="queue-section">
+            <h2>⚠️ Hold Queue (Awaiting Instructor Verification)</h2>
+            {% for task in pending_assignments %}
+            <div class="card unverified">
+                <div class="meta-line">📍 Source: Desk Microcontroller Module | Streamed: {{ task.created_at|date:"g:i A" }}</div>
+                <div class="data-row"><strong>Extracted Subject:</strong> {{ task.subject }}</div>
+                <div class="data-row"><strong>Task Details Parsed:</strong> {{ task.task_details }}</div>
+                <div class="data-row"><strong>Inferred Due Date:</strong> <span style="color: #b45309; font-weight: 600;">{{ task.due_date }}</span></div>
+                
+                <div class="btn-group">
+                    <button class="btn-approve" onclick="verifyAssignment({{ task.id }}, this.parentElement.parentElement)">Verify & Blast to Parents</button>
+                    <button class="btn-deny" onclick="rejectAssignment({{ task.id }}, this.parentElement.parentElement)">Reject Input</button>
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-msg">No unverified vocal assets inside the execution matrix buffer.</p>
+            {% endfor %}
+        </div>
+
+        <div class="queue-section">
+            <h2>✅ Synchronized Feeds (Dispatched to Parents Today)</h2>
+            {% for task in verified_assignments %}
+            <div class="card">
+                <div class="meta-line">🔒 Status: Portal Updated & Parents Emailed via SMTP</div>
+                <div class="data-row"><strong>Subject:</strong> {{ task.subject }} | <strong>Locked Due Date:</strong> {{ task.due_date }}</div>
+                <div class="data-row" style="color: #475569;">{{ task.task_details }}</div>
+            </div>
+            {% empty %}
+            <p style="color: #94a3b8; font-size: 0.95em;">No verified data transactions executed during this school day parameter block.</p>
+            {% endfor %}
+        </div>
+
+        <!-- ==================================================================== -->
+        <!-- 👑 CONDITIONAL MASTER ADMINISTRATIVE CONTROL MATRIX -->
+        <!-- ==================================================================== -->
+        {% if request.user.is_superuser or request.user.profile.role == 'ADMIN' %}
+        <div class="queue-section" style="margin-top: 50px; padding-top: 30px; border-top: 4px dashed #0284c7;">
+            <h2 style="color: #0284c7; font-size: 1.6em; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                👑 Global Network Registry & System Transaction Archives
+            </h2>
+
+            <div style="background: #0f172a; border-radius: 12px; padding: 25px; color: #94a3b8; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);">
+                <!-- Parent Registry Row Controller -->
+                <div style="margin-bottom: 30px; background: rgba(30, 41, 59, 0.5); padding: 20px; border-radius: 8px; border: 1px solid #334155;">
+                    <h3 style="color: #38bdf8; margin-top: 0; font-size: 1.1em; letter-spacing: 0.5px;">👥 BROADCAST PARENT DIRECTORY PIPELINES</h3>
+                    
+                    <form onsubmit="addParentToRegistry(event)" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="email" id="adminNewParentEmail" placeholder="Enter target parent email address (e.g. mom@email.com)" required 
+                               style="flex: 1; background: #1e293b; border: 1px solid #475569; color: white; padding: 10px 14px; border-radius: 6px; font-size: 0.9em; outline: none;">
+                        <button type="submit" style="background-color: #38bdf8; color: #0f172a; padding: 10px 20px; font-weight: 700; border-radius: 6px; font-size: 0.9em; cursor: pointer;">
+                            ➕ Append Registry Row
+                        </button>
+                    </form>
+
+                    <div style="max-height: 150px; overflow-y: auto; background: #0f172a; border-radius: 6px; border: 1px solid #1e293b; padding: 10px;">
+                        <ul id="adminParentRegistryList" style="list-style: none; padding: 0; margin: 0; font-family: monospace; font-size: 0.9em;">
+                            {% for parent in registered_parents %}
+                            <li style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 1px solid #1e293b; color: #e2e8f0;">
+                                <span>📧 {{ parent.email }} <small style="color: #10b981;">[Active Link Node]</small></span>
+                                <button onclick="removeParentFromRegistry({{ parent.id }}, this.parentElement)" style="background: transparent; color: #ef4444; font-size: 0.8em; padding: 2px 6px; border: 1px solid #ef4444; border-radius: 4px; cursor: pointer;">Delete</button>
+                            </li>
+                            {% empty %}
+                            <li style="color: #64748b; font-style: italic; padding: 5px;">No active parent recipient routing vectors written to storage logs.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Global Transaction Log Matrix Table Layout -->
+                <div style="background: rgba(30, 41, 59, 0.5); padding: 20px; border-radius: 8px; border: 1px solid #334155;">
+                    <h3 style="color: #38bdf8; margin-top: 0; font-size: 1.1em; letter-spacing: 0.5px;">🗄️ SERVER CORE DATA TRANSACTION LOGS (All Archives)</h3>
+                    
+                    <div style="max-height: 350px; overflow-y: auto; border-radius: 6px;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.9em;">
+                            <thead>
+                                <tr style="background: #1e293b; color: #f8fafc; border-bottom: 2px solid #334155;">
+                                    <th style="padding: 12px;">ID</th>
+                                    <th style="padding: 12px;">Subject Block</th>
+                                    <th style="padding: 12px;">Instructor Mapped</th>
+                                    <th style="padding: 12px;">Processed Transcript Payload Context</th>
+                                    <th style="padding: 12px;">State Status</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color: #cbd5e1;">
+                                {% for item in transaction_logs %}
+                                <tr style="border-bottom: 1px solid #1e293b; background: {% cycle 'rgba(15, 23, 42, 0.3)' 'rgba(30, 41, 59, 0.2)' %};">
+                                    <td style="padding: 12px; font-family: monospace; color: #38bdf8;">#{{ item.id }}</td>
+                                    <td style="padding: 12px;"><strong style="color: white;">{{ item.subject }}</strong></td>
+                                    <td style="padding: 12px;">{{ item.teacher.last_name|default:"Unassigned [Broadcast Node]" }}</td>
+                                    <td style="padding: 12px; font-size: 0.85em; max-width: 300px; white-space: pre-wrap; color: #94a3b8;">{{ item.task_details }}</td>
+                                    <td style="padding: 12px;">
+                                        {% if item.status == 'VERIFIED' or item.status == 'SENT' %}
+                                        <span style="color: #10b981; font-weight: 700; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8em;">📧 Dispatched</span>
+                                        {% else %}
+                                        <span style="color: #f59e0b; font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.8em;">⏳ On Hold</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #64748b; font-style: italic; padding: 20px;">No historical transaction logs found within the execution storage schema.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function addParentToRegistry(event) {
+                event.preventDefault();
+                const emailInput = document.getElementById('adminNewParentEmail');
+                const targetEmail = emailInput.value.trim();
+                
+                fetch('/api/admin/add-parent/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: targetEmail })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.reload();
+                    } else {
+                        alert("Database parameter validation exception: " + data.message);
+                    }
+                })
+                .catch(err => console.error("Admin system network error:", err));
+            }
+
+            function removeParentFromRegistry(parentId, elementRow) {
+                if(!confirm("Purge this active contact vector tracking row from SQLite tables permanently?")) return;
+                
+                fetch(`/api/admin/delete-parent/${parentId}/`, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') { elementRow.remove(); }
+                });
+            }
+        </script>
+        {% endif %}
+
+    </div>
+</body>
+</html>

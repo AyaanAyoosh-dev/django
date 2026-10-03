@@ -1,0 +1,125 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ item.name|capfirst }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-8 bg-slate-50 min-h-[85vh]">
+    
+    <!-- 📦 Amazon-Style Core Product Panel Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white border border-slate-200/60 p-6 rounded-2xl shadow-sm mb-10">
+        
+        <!-- 🖼️ Column 1: Left Aspect-Locked Image Box (Span 5) -->
+        <div class="lg:col-span-5 w-full bg-slate-50 rounded-xl overflow-hidden p-4 border border-slate-100 flex items-start justify-center min-h-[300px] max-h-[450px]">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-contain rounded-lg">
+            {% else %}
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider my-auto">No Media Linked</div>
+            {% endif %}
+        </div>
+
+        <!-- 📝 Column 2: Center Core Metadata Description Frame (Span 4) -->
+        <div class="lg:col-span-4 flex flex-col gap-4 pb-6 lg:pb-0 lg:pr-6 border-b lg:border-b-0 lg:border-r border-slate-100">
+            <div>
+                <h1 class="text-xl font-extrabold text-slate-900 tracking-tight leading-tight uppercase">
+                    {{ item.name }}
+                </h1>
+                <p class="text-[11px] text-slate-400 font-bold mt-1">Listing Token: #00{{ item.id }}</p>
+            </div>
+
+            <!-- Seller Metadata Ribbon -->
+            <div class="flex items-center gap-1.5 text-xs text-slate-500 font-semibold bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 w-fit">
+                <span class="text-slate-400 uppercase text-[9px] tracking-wider font-bold">Seller:</span>
+                <span class="text-slate-800">@{{ item.created_by.username }}</span>
+            </div>
+
+            {% if item.description %}
+                <div class="pt-4 border-t border-slate-100">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Description</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed font-medium whitespace-pre-line">
+                        {{ item.description }}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- 💳 Column 3: Right Transaction Action Box Container (Span 3) -->
+        <div class="lg:col-span-3 bg-slate-50 border border-slate-200/60 p-5 rounded-xl h-fit flex flex-col gap-4">
+            <div>
+                <span class="text-[9px] font-bold text-slate-400 block uppercase tracking-wider mb-0.5">Service Price</span>
+                <div class="flex items-baseline gap-1 text-slate-900">
+                    <span class="text-3xl font-black tracking-tight">{{ item.Fees }}</span>
+                    <span class="text-xs font-bold text-slate-500 uppercase">AED</span>
+                </div>
+                <span class="text-[10px] text-emerald-600 font-bold block mt-1.5 flex items-center gap-1">✓ Instantly available for checkout</span>
+            </div>
+
+            <!-- Dynamic Owner vs Buyer Operations Block -->
+            <div class="pt-4 border-t border-slate-200/60 flex flex-col gap-2.5">
+                {% if request.user == item.created_by %}
+                    <!-- Admin Control Layout Module -->
+                    <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl text-center">
+                        <p class="text-[10px] text-amber-800 font-bold uppercase tracking-wide">Owner Control Desk</p>
+                        <div class="grid grid-cols-2 gap-2 mt-3 text-xs font-bold uppercase tracking-wider">
+                            <a href="{% url 'item:edit' item.id %}" class="bg-slate-950 hover:bg-slate-800 text-white py-2 rounded-lg transition text-center">
+                                Edit
+                            </a>
+                            <a href="{% url 'item:delete' item.id %}" class="bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition text-center">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Secure Customer Routing Button Layer -->
+                    <a href="{% url 'conversation:new' item.id %}" class="w-full block bg-[#0a008a] hover:bg-[#05005c] text-white text-center text-xs font-bold py-3.5 rounded-xl transition duration-150 uppercase tracking-wider shadow-sm">
+                        💬 Contact Seller
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 🏷️ Lower Carousel Section: Similar Showcases Grid -->
+    <div class="w-full pt-6 border-t border-slate-200">
+        <div class="mb-5 flex flex-col gap-0.5">
+            <h2 class="text-base font-extrabold text-slate-900 tracking-tight">Similar Products/Services</h2>
+            <p class="text-xs text-slate-400 font-medium">Browse related operational registries inside this database node</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for related_item in related_items %}
+                <div class="group bg-white border border-slate-200/60 rounded-xl overflow-hidden shadow-sm hover:border-indigo-200 transition duration-150 flex flex-col justify-between">
+                    <a href="{% url 'item:detail' related_item.id %}" class="flex flex-col h-full">
+                        
+                        <!-- Square Aspect-Locked Thumbnail Window Box -->
+                        <div class="w-full aspect-[4/3] bg-slate-50 flex items-center justify-center border-b border-slate-100 overflow-hidden">
+                            {% if related_item.image %}
+                                <img src="{{ related_item.image.url }}" alt="{{ related_item.name }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="text-[9px] text-slate-300 font-bold uppercase">No Photo</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Card Data Footer Details -->
+                        <div class="p-4 flex-grow flex flex-col justify-between">
+                            <h4 class="text-xs font-bold text-slate-800 tracking-tight group-hover:text-indigo-600 transition truncate">
+                                {{ related_item.name|capfirst }}
+                            </h4>
+                            <div class="mt-3 pt-2 border-t border-slate-50 flex items-center justify-between text-[11px]">
+                                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wide">Fees</span>
+                                <span class="font-extrabold text-slate-900">{{ related_item.Fees }} <span class="text-[10px] text-slate-400 font-medium">AED</span></span>
+                            </div>
+                        </div>
+
+                    </a>
+                </div>
+            {% empty %}
+                <div class="col-span-full border border-dashed border-slate-200 bg-white rounded-xl p-8 text-center text-slate-400 text-xs font-medium">
+                    No relative alternate matches located in current category directory.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduSync Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); height: 100vh; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #f8fafc; }
+        h1 { color: #38bdf8; font-size: 2.5em; margin-bottom: 8px; font-weight: 700; text-shadow: 0 4px 10px rgba(56,189,248,0.2); }
+        p.subtitle { color: #94a3b8; font-size: 1.1em; margin-bottom: 40px; }
+        .grid-container { display: flex; gap: 24px; max-width: 1000px; padding: 0 20px; }
+        .portal-card { background: rgba(30, 41, 59, 0.5); border: 1px solid #334155; border-radius: 16px; padding: 35px 25px; width: 240px; text-align: center; cursor: pointer; backdrop-filter: blur(12px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); transition: transform 0.2s, border-color 0.2s, background 0.2s; text-decoration: none; color: inherit; }
+        .portal-card:hover { transform: translateY(-5px); border-color: #38bdf8; background: rgba(30, 41, 59, 0.8); }
+        .icon { font-size: 3em; margin-bottom: 15px; display: inline-block; }
+        .card-title { color: white; font-size: 1.3em; font-weight: 700; margin-bottom: 10px; }
+        .card-desc { color: #94a3b8; font-size: 0.9em; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <h1>EduSync Portal</h1>
+    <p class="subtitle">Select your entry point to initialize the Edge Data Network</p>
+
+    <div class="grid-container">
+        <!-- Card 1: Teachers -->
+        <a href="/login/?role=TEACHER" class="portal-card">
+            <span class="icon">🧑‍🏫</span>
+            <div class="card-title">Instructor Terminal</div>
+            <div class="card-desc">Verify real-time voice transcripts, manage assignments, and dispatch parent blasts.</div>
+        </a>
+
+        <!-- Card 2: Students/Parents -->
+        <a href="/login/?role=STUDENT_PARENT" class="portal-card">
+            <span class="icon">👪</span>
+            <div class="card-title">Student & Parent Hub</div>
+            <div class="card-desc">Monitor synchronized daily summaries and class-by-class academic feeds.</div>
+        </a>
+
+        <!-- Card 3: Admins -->
+        <a href="/login/?role=ADMIN" class="portal-card">
+            <span class="icon">👑</span>
+            <div class="card-title">System Admin</div>
+            <div class="card-desc">Access server database ledgers, transaction records, and global recipient configuration matrices.</div>
+        </a>
+    </div>
+
+</body>
+</html>

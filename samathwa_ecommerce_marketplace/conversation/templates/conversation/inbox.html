@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Inbox - Messaging Distribution Terminal{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto px-4 py-12 bg-slate-50 min-h-[80vh]">
+    <div class="space-y-6">
+        
+        <!-- 🏢 Central Communication Control Header -->
+        <div class="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[#0a008a] flex items-center justify-center text-white font-black text-sm shadow-sm">
+                📥
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">Secure Message Routing Hub</h1>
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Inbound & Outbound Data Transmissions</p>
+            </div>
+        </div>
+
+        <!-- 💬 Conversations Feed Queue -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Active Communication Streams</p>
+                <span class="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-mono">STREAMS: {{ conversations|length }}</span>
+            </div>
+
+            <div class="space-y-4">
+                {% for conversation in conversations %}
+                    <div class="group bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden transition duration-200 hover:shadow-md hover:border-slate-300">
+                        <div class="p-6 flex flex-col md:flex-row gap-6 items-start">
+                            
+                            <!-- Linked Asset Thumbnail Image Container -->
+                            <div class="relative bg-slate-100 w-24 h-24 rounded-xl overflow-hidden border border-slate-100 flex-shrink-0 mx-auto md:mx-0">
+                                {% if conversation.item.image %}
+                                    <img src="{{ conversation.item.image.url }}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" alt="{{ conversation.item.name }}">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                        <span class="text-xl">📦</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Messaging Stream Interactive Information Node -->
+                            <div class="flex-1 w-full space-y-4">
+                                <a href="{% url 'conversation:detail' pk=conversation.id %}" class="block space-y-2">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-50 pb-2">
+                                        <div>
+                                            {% for member in conversation.members.all %}
+                                                {% if member != request.user %}
+                                                    <span class="text-sm font-extrabold text-slate-900 group-hover:text-[#0a008a] transition duration-150">
+                                                        {{ member.username }}
+                                                    </span>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <span class="text-xs text-slate-400 font-medium px-2">|</span>
+                                            <span class="text-xs font-bold text-slate-700 font-mono bg-slate-100 px-2 py-0.5 rounded-md">
+                                                {{ conversation.item.name }}
+                                            </span>
+                                        </div>
+                                        <span class="text-[10px] font-bold text-slate-400 font-mono tracking-wide">
+                                            MODIFIED: {{ conversation.modified_at|date:"Y-m-d H:i" }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Recent Transmission Message History Feed -->
+                                    <div class="bg-slate-50/60 border border-slate-100 rounded-xl p-4 space-y-2 max-h-40 overflow-y-auto">
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Data Payloads</p>
+                                        {% for message in conversation.messages.all %}
+                                            <div class="text-xs text-slate-600 font-medium flex items-start gap-1.5 leading-relaxed">
+                                                <span class="text-slate-400">🔹</span>
+                                                <p><span class="font-bold text-slate-800">{{ message.created_by.username }}:</span> {{ message.content }}</p>
+                                            </div>
+                                        {% empty %}
+                                            <p class="text-xs text-slate-400 italic">No historical text log sequences recorded.</p>
+                                        {% endfor %}
+                                    </div>
+                                </a>
+
+                                <!-- Action Terminal Quick Reply Transmission Form -->
+                                <form method="post" action="{% url 'conversation:detail' pk=conversation.id %}" class="pt-2">
+                                    {% csrf_token %}
+                                    <div class="flex gap-2">
+                                        <div class="flex-1 text-sm text-slate-700 dynamic-reply-input">
+                                            {{ form.content }}
+                                        </div>
+                                        <button type="submit" class="px-5 py-2.5 bg-[#0a008a] hover:bg-[#05005c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm flex items-center justify-center gap-1.5 self-end">
+                                            <span>Send</span> ⚡
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <!-- Null State Fallback Node -->
+                    <div class="col-span-full bg-white border border-slate-200/80 p-12 rounded-2xl text-center">
+                        <span class="text-4xl block mb-3">💬</span>
+                        <p class="text-sm font-bold text-slate-700">Communication Logs Empty</p>
+                        <p class="text-xs text-slate-400 mt-1">No active conversation arrays linked with consumer item queries found.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 🛠️ Inject CSS to style custom instant inline messaging query rows beautifully -->
+<style>
+    /* Unify inner quick-reply data nodes with systemic framework inputs */
+    .dynamic-reply-input input[type="text"], 
+    .dynamic-reply-input textarea {
+        width: 100% !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        padding: 0.60rem 1rem !important;
+        font-size: 0.8125rem !important;
+        line-height: 1.25rem !important;
+        background-color: #f8fafc !important;
+        transition: all 150ms ease !important;
+    }
+    .dynamic-reply-input input[type="text"]:focus, 
+    .dynamic-reply-input textarea:focus {
+        outline: none !important;
+        border-color: #0a008a !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(10, 0, 138, 0.05) !important;
+    }
+</style>
+{% endblock %}

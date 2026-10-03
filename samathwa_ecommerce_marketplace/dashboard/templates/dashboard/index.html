@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Operational Asset Management{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-7xl mx-auto px-4 py-12 bg-slate-50 min-h-[80vh]">
+    <div class="space-y-6">
+        
+        <!-- 🏢 Central Control Meta Information Header -->
+        <div class="bg-white border border-slate-200/80 p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-[#0a008a] flex items-center justify-center text-white font-black text-sm shadow-sm">
+                    📊
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">Vendor Management Dashboard</h1>
+                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Relational Asset & Inventory Console</p>
+                </div>
+            </div>
+            
+            <!-- Quick Action Add Button Node -->
+            <div>
+                <a href="{% url 'item:new' %}" class="px-5 py-2.5 bg-[#0a008a] hover:bg-[#05005c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm flex items-center gap-1.5">
+                    <span>Register New Entry</span> ➕
+                </a>
+            </div>
+        </div>
+
+        <!-- 📦 Main Data Grid Node: Managed Services & Products -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200/60 pb-3">
+                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Your Active Services & Offerings</p>
+                <span class="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-mono">OWNED: {{ items|length }}</span>
+            </div>
+
+            <!-- Dashboard Catalog Grid Layout -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in items %}
+                    <div class="group bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between transition duration-200 hover:shadow-md hover:border-slate-300">
+                        <a href="{% url 'item:detail' item.id %}" class="flex flex-col h-full">
+                            
+                            <!-- Object Image Node Container -->
+                            <div class="relative bg-slate-100 aspect-video w-full overflow-hidden border-b border-slate-100">
+                                {% if item.image %}
+                                    <img src="{{ item.image.url }}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" alt="{{ item.name }}">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                        <span class="text-3xl">📦</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Structural Metadata Body -->
+                            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Asset Entity</p>
+                                    <h2 class="text-base font-bold text-slate-800 tracking-tight line-clamp-1 group-hover:text-[#0a008a] transition duration-150">
+                                        {{ item.name }}
+                                    </h2>
+                                </div>
+                                
+                                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Financial Rate</span>
+                                    <p class="text-sm font-black text-slate-900 font-mono">
+                                        {{ item.fees }}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Dashboard Specific Entity Actions Toolbar -->
+                        <div class="bg-slate-50/60 border-t border-slate-100 px-5 py-3 flex items-center justify-end gap-2.5">
+                            <a href="{% url 'item:edit' item.id %}" class="text-[10px] font-bold text-slate-500 hover:text-[#0a008a] transition duration-150 uppercase tracking-wider flex items-center gap-1">
+                                <span>Modify</span> ⚙️
+                            </a>
+                            <span class="text-slate-200 text-xs">|</span>
+                            <a href="{% url 'item:delete' item.id %}" class="text-[10px] font-bold text-red-500 hover:text-red-700 transition duration-150 uppercase tracking-wider flex items-center gap-1">
+                                <span>Terminate</span> 🗑️
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <!-- Null State Fallback Node -->
+                    <div class="col-span-full bg-white border border-slate-200/80 p-12 rounded-2xl text-center">
+                        <span class="text-4xl block mb-3">📋</span>
+                        <p class="text-sm font-bold text-slate-700">No Registered Services Linked to Account</p>
+                        <p class="text-xs text-slate-400 mt-1 mb-4">You have not deployed any product or service vectors onto the active database matrix yet.</p>
+                        <a href="{% url 'item:new' %}" class="inline-flex px-5 py-2.5 bg-[#0a008a] hover:bg-[#05005c] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition duration-150 shadow-sm items-center gap-1.5">
+                            Create First Asset Entry ⚡
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
