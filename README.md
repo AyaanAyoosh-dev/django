@@ -25,7 +25,7 @@ Beyond e-commerce architectures, this portfolio repository contains additional f
   * **Clearance-Tier Dashboards:** Separated frontends tailored for *Factory Workers* (X-ray data entry), *Safety Officers* (human-in-the-loop chemical approval checkpoints), and an off-hours *Shift-Locked Security Validator*.
   * **5-Agent Autonomous Safety Loop:** Coordinates a continuous cycle between a Data Retriever, a Computational Chemist (Gemini/GPT logic), a 0-Temp Safety Checker (requiring a hard target Score ≥ 95/100), a Peer Reviewer loop, and a System Router.
   * **UN SDG Alignment:** Aligned to programmatically adhere to United Nations Sustainable Development Goals for *Responsible Consumption & Production* (SDG 12) and *Industry, Innovation, and Infrastructure* (SDG 9).
-
+NOTE: this app is not complete and in production.
 ### 2. EduSync: Phoenix VoiceLink IoT Portal
 * **Folder Name:** `EduSync`
 * **Core Concept:** A privacy-first edge hardware integration ecosystem engineered to minimize teacher burnout by converting speech to automated workflow data. A desk-mounted device parses verbal directives, processes intent payloads on the fly via edge AI, maps assignments onto a local simulated LMS portal, and triggers automated daily email digests to parents via SMTP.
